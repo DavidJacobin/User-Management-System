@@ -15,7 +15,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 //parse application/ JSON
 app.use(bodyParser.json());
 
-app.use(express.static('public'))
+app.use(express.static('public'));
+
+//templating engine
+app.engine('hbs', exphbs.engine( {extname: '.hbs'}));
+app.set('view engine', 'hbs');
 
 
 app.listen(5000, () => console.log(`Server is listening!`));
