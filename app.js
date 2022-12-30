@@ -39,8 +39,8 @@ pool.getConnection((err,connection) =>{
 
 
 //router
-app.get('/', (req, res) =>{
-    res.render('home')
-})
+const routes = require('./server/routes/user.js')
+
+app.use('/', routes)
 
 app.listen(5000, () => console.log(`Server is listening!`));
