@@ -31,3 +31,24 @@ exports.view = (req, res) => {
         })
     })
 };
+
+exports.find = (req, res) =>{
+
+    pool.getConnection((err, connection) => {
+        if (err) throw err;
+        console.log('Connected to DB');
+
+        let searchTerm = req.body.search
+
+        connection.query('SELECT * FROM user WHERE first_name LIKE ? OR last_name LIKE ?', ['%' + searchTerm + "%", '%' + searchTerm + "%"] , (err, rows) => {
+            connection.release();
+
+            if (!err) {
+                res.render('home', { rows })
+            } else {
+                console.log(err);
+            }
+        })
+    })
+
+};
