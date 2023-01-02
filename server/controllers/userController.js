@@ -53,8 +53,29 @@ exports.find = (req, res) =>{
 
 };
 
+exports.create = (req, res) => {
+    res.render('create')
+};
+
 exports.form = (req, res) =>{
 
-    res.render('create')
+    const { first_name, last_name, email, phone } = req.body;
+
+    pool.getConnection((err, connection) => {
+        if (err) throw err;
+        console.log('Connected to DB');
+
+        let searchTerm = req.body.search
+
+        connection.query('INSERT INTO user SET first_name = ?, last_name = ?, email = ?, phone = ?', [first_name,last_name,email,phone], ['%' + searchTerm + "%", '%' + searchTerm + "%"] , (err, rows) => {
+            connection.release();
+
+            if (!err) {
+                res.render('create')
+            } else {
+                console.log(err);
+            }
+        })
+    })
 
 };
