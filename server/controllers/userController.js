@@ -52,3 +52,9 @@ exports.find = (req, res) =>{
     })
 
 };
+
+exports.form = (req, res) =>{
+
+    res.render('create')
+
+};
