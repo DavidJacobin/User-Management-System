@@ -32,7 +32,7 @@ exports.view = (req, res) => {
     })
 };
 
-exports.find = (req, res) =>{
+exports.find = (req, res) => {
 
     pool.getConnection((err, connection) => {
         if (err) throw err;
@@ -40,7 +40,7 @@ exports.find = (req, res) =>{
 
         let searchTerm = req.body.search
 
-        connection.query('SELECT * FROM user WHERE first_name LIKE ? OR last_name LIKE ?', ['%' + searchTerm + "%", '%' + searchTerm + "%"] , (err, rows) => {
+        connection.query('SELECT * FROM user WHERE first_name LIKE ? OR last_name LIKE ?', ['%' + searchTerm + "%", '%' + searchTerm + "%"], (err, rows) => {
             connection.release();
 
             if (!err) {
@@ -57,17 +57,14 @@ exports.create = (req, res) => {
     res.render('create')
 };
 
-exports.form = (req, res) =>{
+exports.form = (req, res) => {
 
     const { first_name, last_name, email, phone } = req.body;
 
     pool.getConnection((err, connection) => {
         if (err) throw err;
-        console.log('Connected to DB');
 
-        let searchTerm = req.body.search
-
-        connection.query('INSERT INTO user SET first_name = ?, last_name = ?, email = ?, phone = ?', [first_name,last_name,email,phone], ['%' + searchTerm + "%", '%' + searchTerm + "%"] , (err, rows) => {
+        connection.query('INSERT INTO user SET first_name = ?, last_name = ?, email = ?, phone = ?', [first_name, last_name, email, phone], (err, rows) => {
             connection.release();
 
             if (!err) {
@@ -75,7 +72,53 @@ exports.form = (req, res) =>{
             } else {
                 console.log(err);
             }
+        });
+    });
+
+};
+
+exports.edit = (req, res) => {
+
+    pool.getConnection((err, connection) => {
+        if (err) throw err;
+
+
+
+        connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+            connection.release();
+
+            if (!err) {
+                res.render('edit', { rows })
+            } else {
+                console.log(err);
+            }
         })
     })
+};
+
+exports.edited = (req, res) => {
+
+    const { first_name, last_name, email, phone } = req.body;
+
+    pool.getConnection((err, connection) => {
+        if (err) throw err;
+
+        connection.query('UPDATE user SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE id = ?', [first_name, last_name, email, phone, req.params.id], (err, rows) => {
+            connection.release();
+
+            if (!err) {
+                connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+        
+                    if (!err) {
+                        res.render('edit', { rows })
+                    } else {
+                        console.log(err);
+                    }
+                })
+            } else {
+                console.log(err);
+            }
+        });
+    });
 
 };
