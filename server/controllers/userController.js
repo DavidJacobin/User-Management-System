@@ -122,3 +122,21 @@ exports.edited = (req, res) => {
     });
 
 };
+
+
+exports.delete = (req, res) => {
+
+    pool.getConnection((err, connection) => {
+        if (err) throw err;
+
+        connection.query('DELETE FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+            connection.release();
+
+            if (!err) {
+                res.redirect('/')
+            } else {
+                console.log(err);
+            }
+        })
+    })
+};
